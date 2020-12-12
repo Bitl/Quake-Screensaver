@@ -277,7 +277,21 @@ int	m_main_cursor;
 
 void M_Menu_Main_f (void)
 {
-	Sys_Quit();
+	if (isConfig)
+	{
+		if (key_dest != key_menu)
+		{
+			m_save_demonum = cls.demonum;
+			cls.demonum = -1;
+		}
+		key_dest = key_menu;
+		m_state = m_main;
+		m_entersound = true;
+	}
+	else
+	{
+		Sys_Quit();
+	}
 }
 
 

@@ -57,12 +57,75 @@ int			in_impulse;
 
 void KeyDown (kbutton_t *b)
 {
-	Sys_Quit();
+	if (isConfig)
+	{
+		int		k;
+		char* c;
+
+		c = Cmd_Argv(1);
+		if (c[0])
+			k = atoi(c);
+		else
+			k = -1;		// typed manually at the console for continuous down
+
+		if (k == b->down[0] || k == b->down[1])
+			return;		// repeating key
+
+		if (!b->down[0])
+			b->down[0] = k;
+		else if (!b->down[1])
+			b->down[1] = k;
+		else
+		{
+			Con_Printf("Three keys down for a button!\n");
+			return;
+		}
+
+		if (b->state & 1)
+			return;		// still down
+		b->state |= 1 + 2;	// down + impulse down
+	}
+	else
+	{
+		Sys_Quit();
+	}
 }
 
 void KeyUp (kbutton_t *b)
 {
-	Sys_Quit();
+	if (isConfig)
+	{
+		int		k;
+		char* c;
+
+		c = Cmd_Argv(1);
+		if (c[0])
+			k = atoi(c);
+		else
+		{ // typed manually at the console, assume for unsticking, so clear all
+			b->down[0] = b->down[1] = 0;
+			b->state = 4;	// impulse up
+			return;
+		}
+
+		if (b->down[0] == k)
+			b->down[0] = 0;
+		else if (b->down[1] == k)
+			b->down[1] = 0;
+		else
+			return;		// key up without coresponding down (menu pass through)
+		if (b->down[0] || b->down[1])
+			return;		// some other key is still holding it down
+
+		if (!(b->state & 1))
+			return;		// still up (this should not happen)
+		b->state &= ~1;		// now up
+		b->state |= 4; 		// impulse up
+	}
+	else
+	{
+		Sys_Quit();
+	}
 }
 
 void IN_KLookDown (void) {KeyDown(&in_klook);}

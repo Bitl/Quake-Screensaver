@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "errno.h"
 #include "resource.h"
 #include "conproc.h"
+#include <shlwapi.h>
 #include <direct.h>
 
 #define MINIMUM_WIN_MEMORY		0x0880000
@@ -43,6 +44,7 @@ static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
 static int			lowshift;
 qboolean			isDedicated;
+int					isConfig;
 static qboolean		sc_return_on_enter = false;
 HANDLE				hinput, houtput;
 
@@ -694,8 +696,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	lpBuffer.dwLength = sizeof(MEMORYSTATUS);
 	GlobalMemoryStatus (&lpBuffer);
 
-	if (!GetCurrentDirectory (sizeof(cwd), cwd))
+	if (!GetModuleFileNameA(NULL, cwd, sizeof(cwd)))
 		Sys_Error ("Couldn't determine current directory");
+	else
+		PathRemoveFileSpec(cwd);
 
 	if (cwd[Q_strlen(cwd)-1] == '/')
 		cwd[Q_strlen(cwd)-1] = 0;
@@ -735,144 +739,171 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	isDedicated = (COM_CheckParm ("-dedicated") != 0);
+	int isScreen = (COM_CheckParm("/s") != 0) || (COM_CheckParm("/S") != 0);
+	isConfig = (COM_CheckParm("/c") != 0) || (COM_CheckParm("/C") != 0);
+	int isPreview = (COM_CheckParm("/p") != 0) || (COM_CheckParm("/P") != 0);
+	int isPasswordProtected = (COM_CheckParm("/a") != 0) || (COM_CheckParm("/A") != 0);
+	bool initGame = false;
 
-	if (!isDedicated)
+	if (isScreen || isConfig)
 	{
-		hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
-
-		if (hwnd_dialog)
+		initGame = true;
+	}
+	else if (!isScreen && !isConfig)
+	{
+		if (!isPreview && !isPasswordProtected)
 		{
-			if (GetWindowRect (hwnd_dialog, &rect))
+			// load up the config menu
+			isConfig = 1;
+			initGame = true;
+		}
+	}
+
+	if (initGame)
+	{
+		isDedicated = (COM_CheckParm("-dedicated") != 0);
+
+		if (!isDedicated)
+		{
+			hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
+
+			if (hwnd_dialog)
 			{
-				if (rect.left > (rect.top * 2))
+				if (GetWindowRect(hwnd_dialog, &rect))
 				{
-					SetWindowPos (hwnd_dialog, 0,
-						(rect.left / 2) - ((rect.right - rect.left) / 2),
-						rect.top, 0, 0,
-						SWP_NOZORDER | SWP_NOSIZE);
+					if (rect.left > (rect.top * 2))
+					{
+						SetWindowPos(hwnd_dialog, 0,
+							(rect.left / 2) - ((rect.right - rect.left) / 2),
+							rect.top, 0, 0,
+							SWP_NOZORDER | SWP_NOSIZE);
+					}
 				}
+
+				ShowWindow(hwnd_dialog, SW_SHOWDEFAULT);
+				UpdateWindow(hwnd_dialog);
+				SetForegroundWindow(hwnd_dialog);
 			}
-
-			ShowWindow (hwnd_dialog, SW_SHOWDEFAULT);
-			UpdateWindow (hwnd_dialog);
-			SetForegroundWindow (hwnd_dialog);
-		}
-	}
-
-// take the greater of all the available memory or half the total memory,
-// but at least 8 Mb and no more than 16 Mb, unless they explicitly
-// request otherwise
-	parms.memsize = lpBuffer.dwAvailPhys;
-
-	if (parms.memsize < MINIMUM_WIN_MEMORY)
-		parms.memsize = MINIMUM_WIN_MEMORY;
-
-	if (parms.memsize < (lpBuffer.dwTotalPhys >> 1))
-		parms.memsize = lpBuffer.dwTotalPhys >> 1;
-
-	if (parms.memsize > MAXIMUM_WIN_MEMORY)
-		parms.memsize = MAXIMUM_WIN_MEMORY;
-
-	if (COM_CheckParm ("-heapsize"))
-	{
-		t = COM_CheckParm("-heapsize") + 1;
-
-		if (t < com_argc)
-			parms.memsize = Q_atoi (com_argv[t]) * 1024;
-	}
-
-	parms.membase = malloc (parms.memsize);
-
-	if (!parms.membase)
-		Sys_Error ("Not enough memory free; check disk space\n");
-
-	Sys_PageIn (parms.membase, parms.memsize);
-
-	tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
-
-	if (!tevent)
-		Sys_Error ("Couldn't create event");
-
-	if (isDedicated)
-	{
-		if (!AllocConsole ())
-		{
-			Sys_Error ("Couldn't create dedicated server console");
 		}
 
-		hinput = GetStdHandle (STD_INPUT_HANDLE);
-		houtput = GetStdHandle (STD_OUTPUT_HANDLE);
+		// take the greater of all the available memory or half the total memory,
+		// but at least 8 Mb and no more than 16 Mb, unless they explicitly
+		// request otherwise
+		parms.memsize = lpBuffer.dwAvailPhys;
 
-	// give QHOST a chance to hook into the console
-		if ((t = COM_CheckParm ("-HFILE")) > 0)
+		if (parms.memsize < MINIMUM_WIN_MEMORY)
+			parms.memsize = MINIMUM_WIN_MEMORY;
+
+		if (parms.memsize < (lpBuffer.dwTotalPhys >> 1))
+			parms.memsize = lpBuffer.dwTotalPhys >> 1;
+
+		if (parms.memsize > MAXIMUM_WIN_MEMORY)
+			parms.memsize = MAXIMUM_WIN_MEMORY;
+
+		if (COM_CheckParm("-heapsize"))
 		{
+			t = COM_CheckParm("-heapsize") + 1;
+
 			if (t < com_argc)
-				hFile = (HANDLE)Q_atoi (com_argv[t+1]);
-		}
-			
-		if ((t = COM_CheckParm ("-HPARENT")) > 0)
-		{
-			if (t < com_argc)
-				heventParent = (HANDLE)Q_atoi (com_argv[t+1]);
-		}
-			
-		if ((t = COM_CheckParm ("-HCHILD")) > 0)
-		{
-			if (t < com_argc)
-				heventChild = (HANDLE)Q_atoi (com_argv[t+1]);
+				parms.memsize = Q_atoi(com_argv[t]) * 1024;
 		}
 
-		InitConProc (hFile, heventParent, heventChild);
-	}
+		parms.membase = malloc(parms.memsize);
 
-	Sys_Init ();
+		if (!parms.membase)
+			Sys_Error("Not enough memory free; check disk space\n");
 
-// because sound is off until we become active
-	S_BlockSound ();
+		Sys_PageIn(parms.membase, parms.memsize);
 
-	Sys_Printf ("Host_Init\n");
-	Host_Init (&parms);
+		tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-	oldtime = Sys_FloatTime ();
+		if (!tevent)
+			Sys_Error("Couldn't create event");
 
-    /* main window message loop */
-	while (1)
-	{
 		if (isDedicated)
 		{
-			newtime = Sys_FloatTime ();
-			time = newtime - oldtime;
-
-			while (time < sys_ticrate.value )
+			if (!AllocConsole())
 			{
-				Sys_Sleep();
-				newtime = Sys_FloatTime ();
+				Sys_Error("Couldn't create dedicated server console");
+			}
+
+			hinput = GetStdHandle(STD_INPUT_HANDLE);
+			houtput = GetStdHandle(STD_OUTPUT_HANDLE);
+
+			// give QHOST a chance to hook into the console
+			if ((t = COM_CheckParm("-HFILE")) > 0)
+			{
+				if (t < com_argc)
+					hFile = (HANDLE)Q_atoi(com_argv[t + 1]);
+			}
+
+			if ((t = COM_CheckParm("-HPARENT")) > 0)
+			{
+				if (t < com_argc)
+					heventParent = (HANDLE)Q_atoi(com_argv[t + 1]);
+			}
+
+			if ((t = COM_CheckParm("-HCHILD")) > 0)
+			{
+				if (t < com_argc)
+					heventChild = (HANDLE)Q_atoi(com_argv[t + 1]);
+			}
+
+			InitConProc(hFile, heventParent, heventChild);
+		}
+
+		Sys_Init();
+
+		// because sound is off until we become active
+		S_BlockSound();
+
+		Sys_Printf("Host_Init\n");
+		Host_Init(&parms);
+
+		oldtime = Sys_FloatTime();
+
+		/* main window message loop */
+		while (1)
+		{
+			if (isDedicated)
+			{
+				newtime = Sys_FloatTime();
+				time = newtime - oldtime;
+
+				while (time < sys_ticrate.value)
+				{
+					Sys_Sleep();
+					newtime = Sys_FloatTime();
+					time = newtime - oldtime;
+				}
+			}
+			else
+			{
+				// yield the CPU for a little while when paused, minimized, or not the focus
+				if ((cl.paused && (!ActiveApp && !DDActive)) || Minimized || block_drawing)
+				{
+					SleepUntilInput(PAUSE_SLEEP);
+					scr_skipupdate = 1;		// no point in bothering to draw
+				}
+				else if (!ActiveApp && !DDActive)
+				{
+					SleepUntilInput(NOT_FOCUS_SLEEP);
+				}
+
+				newtime = Sys_FloatTime();
 				time = newtime - oldtime;
 			}
-		}
-		else
-		{
-		// yield the CPU for a little while when paused, minimized, or not the focus
-			if ((cl.paused && (!ActiveApp && !DDActive)) || Minimized || block_drawing)
-			{
-				SleepUntilInput (PAUSE_SLEEP);
-				scr_skipupdate = 1;		// no point in bothering to draw
-			}
-			else if (!ActiveApp && !DDActive)
-			{
-				SleepUntilInput (NOT_FOCUS_SLEEP);
-			}
 
-			newtime = Sys_FloatTime ();
-			time = newtime - oldtime;
+			Host_Frame(time);
+			oldtime = newtime;
 		}
 
-		Host_Frame (time);
-		oldtime = newtime;
+		/* return success of application */
+		return TRUE;
 	}
-
-    /* return success of application */
-    return TRUE;
+	else
+	{
+		return FALSE;
+	}
 }
 

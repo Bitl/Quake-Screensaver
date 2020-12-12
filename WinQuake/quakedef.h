@@ -325,6 +325,8 @@ extern qboolean		isDedicated;
 
 extern int			minimum_memory;
 
+extern int			isConfig;
+
 //
 // chase
 //

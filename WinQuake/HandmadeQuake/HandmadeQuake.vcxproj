@@ -210,6 +210,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)..\scitech\INCLUDE;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\scitech\lib\win32\vc\;$(LibraryPath)</LibraryPath>
+    <TargetExt>.scr</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -218,6 +219,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)..\scitech\INCLUDE;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\scitech\lib\win32\vc\;$(LibraryPath)</LibraryPath>
+    <TargetExt>.scr</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -237,7 +239,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Winmm.lib;DXGUID.LIB;wsock32.lib;mgllt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib;DXGUID.LIB;wsock32.lib;mgllt.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -274,7 +276,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Winmm.lib;DXGUID.LIB;wsock32.lib;mgllt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib;DXGUID.LIB;wsock32.lib;mgllt.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
       <ImageHasSafeExceptionHandlers />
     </Link>
