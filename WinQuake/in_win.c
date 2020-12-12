@@ -725,7 +725,7 @@ void IN_MouseMove (usercmd_t *cmd)
 // if the mouse has moved, force it to the center, so there's room to move
 	if (mx || my)
 	{
-		SetCursorPos (window_center_x, window_center_y);
+		Sys_Quit();
 	}
 }
 
@@ -737,7 +737,6 @@ IN_Move
 */
 void IN_Move (usercmd_t *cmd)
 {
-
 	if (ActiveApp && !Minimized)
 	{
 		IN_MouseMove (cmd);
