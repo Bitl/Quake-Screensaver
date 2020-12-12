@@ -1,3 +1,7 @@
+<h3 align="center">
+  <img src="https://raw.githubusercontent.com/Bitl/Quake-Screensaver/master/preview.gif" width="300px" alt="gif">
+</h3>
+
 # QuakeScreensaver
 WinQuake modified to act like a screensaver.
 Based off of https://github.com/philipbuuck/Quake-VS2015
