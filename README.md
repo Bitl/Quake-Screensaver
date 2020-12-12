@@ -11,4 +11,4 @@ You must have a legit copy of Quake, or you need the Shareware version.
 Copy the .scr file from the releases into your Quake directory, then right-click and click Install.
 
 ## Compile
-Requires VS2015+ to compile. 
+Requires VS2015+ to compile. Build on x86 Release.
