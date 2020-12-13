@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HandmadeQuake", "HandmadeQuake.vcxproj", "{87E925C1-B432-40F1-B480-704ACB37EC2A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuakeScreensaver", "HandmadeQuake.vcxproj", "{87E925C1-B432-40F1-B480-704ACB37EC2A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuakeScreensaver (Custom)", "HandmadeQuake_Custom.vcxproj", "{71AAE848-F369-4E2A-B684-EFDF40EFBD7E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuakeScreensaver (Hipnotic)", "HandmadeQuake_Hipnotic.vcxproj", "{180F7454-5C60-4F9E-A6ED-F0A662266E2F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuakeScreensaver (Rogue)", "HandmadeQuake_Rogue.vcxproj", "{4C00485C-9893-4F5A-98B2-A000DF7B46FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +27,35 @@ Global
 		{87E925C1-B432-40F1-B480-704ACB37EC2A}.Release|x64.Build.0 = Release|x64
 		{87E925C1-B432-40F1-B480-704ACB37EC2A}.Release|x86.ActiveCfg = Release|Win32
 		{87E925C1-B432-40F1-B480-704ACB37EC2A}.Release|x86.Build.0 = Release|Win32
+		{71AAE848-F369-4E2A-B684-EFDF40EFBD7E}.Debug|x64.ActiveCfg = Debug|x64
+		{71AAE848-F369-4E2A-B684-EFDF40EFBD7E}.Debug|x64.Build.0 = Debug|x64
+		{71AAE848-F369-4E2A-B684-EFDF40EFBD7E}.Debug|x86.ActiveCfg = Debug|Win32
+		{71AAE848-F369-4E2A-B684-EFDF40EFBD7E}.Debug|x86.Build.0 = Debug|Win32
+		{71AAE848-F369-4E2A-B684-EFDF40EFBD7E}.Release|x64.ActiveCfg = Release|x64
+		{71AAE848-F369-4E2A-B684-EFDF40EFBD7E}.Release|x64.Build.0 = Release|x64
+		{71AAE848-F369-4E2A-B684-EFDF40EFBD7E}.Release|x86.ActiveCfg = Release|Win32
+		{71AAE848-F369-4E2A-B684-EFDF40EFBD7E}.Release|x86.Build.0 = Release|Win32
+		{180F7454-5C60-4F9E-A6ED-F0A662266E2F}.Debug|x64.ActiveCfg = Debug|x64
+		{180F7454-5C60-4F9E-A6ED-F0A662266E2F}.Debug|x64.Build.0 = Debug|x64
+		{180F7454-5C60-4F9E-A6ED-F0A662266E2F}.Debug|x86.ActiveCfg = Debug|Win32
+		{180F7454-5C60-4F9E-A6ED-F0A662266E2F}.Debug|x86.Build.0 = Debug|Win32
+		{180F7454-5C60-4F9E-A6ED-F0A662266E2F}.Release|x64.ActiveCfg = Release|x64
+		{180F7454-5C60-4F9E-A6ED-F0A662266E2F}.Release|x64.Build.0 = Release|x64
+		{180F7454-5C60-4F9E-A6ED-F0A662266E2F}.Release|x86.ActiveCfg = Release|Win32
+		{180F7454-5C60-4F9E-A6ED-F0A662266E2F}.Release|x86.Build.0 = Release|Win32
+		{4C00485C-9893-4F5A-98B2-A000DF7B46FE}.Debug|x64.ActiveCfg = Debug|x64
+		{4C00485C-9893-4F5A-98B2-A000DF7B46FE}.Debug|x64.Build.0 = Debug|x64
+		{4C00485C-9893-4F5A-98B2-A000DF7B46FE}.Debug|x86.ActiveCfg = Debug|Win32
+		{4C00485C-9893-4F5A-98B2-A000DF7B46FE}.Debug|x86.Build.0 = Debug|Win32
+		{4C00485C-9893-4F5A-98B2-A000DF7B46FE}.Release|x64.ActiveCfg = Release|x64
+		{4C00485C-9893-4F5A-98B2-A000DF7B46FE}.Release|x64.Build.0 = Release|x64
+		{4C00485C-9893-4F5A-98B2-A000DF7B46FE}.Release|x86.ActiveCfg = Release|Win32
+		{4C00485C-9893-4F5A-98B2-A000DF7B46FE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {75153945-0DCC-413F-A003-0A7236B28148}
 	EndGlobalSection
 EndGlobal

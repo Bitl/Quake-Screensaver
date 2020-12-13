@@ -72,24 +72,31 @@ Con_ToggleConsole_f
 */
 void Con_ToggleConsole_f (void)
 {
-	if (key_dest == key_console)
+	if (isConfig)
 	{
-		if (cls.state == ca_connected)
+		if (key_dest == key_console)
 		{
-			key_dest = key_game;
-			key_lines[edit_line][1] = 0;	// clear any typing
-			key_linepos = 1;
+			if (cls.state == ca_connected)
+			{
+				key_dest = key_game;
+				key_lines[edit_line][1] = 0;	// clear any typing
+				key_linepos = 1;
+			}
+			else
+			{
+				M_Menu_Main_f();
+			}
 		}
 		else
-		{
-			M_Menu_Main_f ();
-		}
+			key_dest = key_console;
+
+		SCR_EndLoadingPlaque();
+		memset(con_times, 0, sizeof(con_times));
 	}
 	else
-		key_dest = key_console;
-	
-	SCR_EndLoadingPlaque ();
-	memset (con_times, 0, sizeof(con_times));
+	{
+		Sys_Quit();
+	}
 }
 
 /*

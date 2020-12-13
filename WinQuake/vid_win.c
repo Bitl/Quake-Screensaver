@@ -632,7 +632,15 @@ void VID_InitMGLDIB (HINSTANCE hInstance)
     wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
 	wc.hbrBackground = NULL;
     wc.lpszMenuName  = 0;
-    wc.lpszClassName = "WinQuake";
+#ifdef ROGUE
+	wc.lpszClassName = "Dissolution of Eternity";
+#elif HIPNOTIC
+	wc.lpszClassName = "Scourge of Armagon";
+#elif CUSTOM
+	wc.lpszClassName = "WinQuake Custom";
+#else
+	wc.lpszClassName = "WinQuake";
+#endif
 
     if (!RegisterClass (&wc) )
 		Sys_Error ("Couldn't register window class");
@@ -1269,14 +1277,28 @@ qboolean VID_SetWindowedMode (int modenum)
 	ExWindowStyle = 0;
 	AdjustWindowRectEx(&WindowRect, WindowStyle, FALSE, 0);
 
+	const char* appName = "WinQuake";
+
+#ifdef ROGUE
+	appName = "Dissolution of Eternity";
+#endif
+
+#ifdef HIPNOTIC
+	appName = "Scourge of Armagon";
+#endif
+
+#ifdef CUSTOM
+	appName = "WinQuake Custom";
+#endif
+
 // the first time we're called to set the mode, create the window we'll use
 // for the rest of the session
 	if (!vid_mode_set)
 	{
 		mainwindow = CreateWindowEx (
 			 ExWindowStyle,
-			 "WinQuake",
-			 "WinQuake",
+			 appName,
+			 appName,
 			 WindowStyle,
 			 0, 0,
 			 WindowRect.right - WindowRect.left,

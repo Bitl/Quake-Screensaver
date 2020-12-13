@@ -46,4 +46,11 @@ Network Trash Folder
 Temporary Items
 .apdisk
 WinQuake/HandmadeQuake/Release/*
+WinQuake/HandmadeQuake/Debug/*
+WinQuake/HandmadeQuake/Release_Custom/*
+WinQuake/HandmadeQuake/Debug_Custom/*
+WinQuake/HandmadeQuake/Release_Rogue/*
+WinQuake/HandmadeQuake/Debug_Rogue/*
+WinQuake/HandmadeQuake/Release_Hipnotic/*
+WinQuake/HandmadeQuake/Debug_Hipnotic/*
 WinQuake/HandmadeQuake/.vs/*

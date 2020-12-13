@@ -1103,17 +1103,15 @@ void COM_InitArgv (int argc, char **argv)
 	largv[com_argc] = argvdummy;
 	com_argv = largv;
 
-	if (COM_CheckParm ("-rogue"))
-	{
+#ifdef ROGUE
 		rogue = true;
 		standard_quake = false;
-	}
+#endif
 
-	if (COM_CheckParm ("-hipnotic"))
-	{
+#ifdef HIPNOTIC
 		hipnotic = true;
 		standard_quake = false;
-	}
+#endif
 }
 
 
@@ -1776,10 +1774,17 @@ void COM_InitFilesystem (void)
 //
 	COM_AddGameDirectory (va("%s/"GAMENAME, basedir) );
 
-	if (COM_CheckParm ("-rogue"))
-		COM_AddGameDirectory (va("%s/rogue", basedir) );
-	if (COM_CheckParm ("-hipnotic"))
-		COM_AddGameDirectory (va("%s/hipnotic", basedir) );
+#ifdef ROGUE
+	COM_AddGameDirectory (va("%s/rogue", basedir) );
+#endif
+
+#ifdef HIPNOTIC
+	COM_AddGameDirectory (va("%s/hipnotic", basedir) );
+#endif
+
+#ifdef CUSTOM
+	COM_AddGameDirectory(va("%s/custom", basedir));
+#endif
 
 //
 // -game <gamedir>
